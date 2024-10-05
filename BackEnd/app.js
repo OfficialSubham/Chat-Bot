@@ -7,6 +7,7 @@ import usersRouter from "./routes/users.js";
 
 export const app = express();
 
+
 // view engine setup
 app.use(logger("dev"));
 app.use(express.json());
