@@ -1,9 +1,24 @@
-import express from "express"
-import {registerUser} from "../controllers/UserData.js"
+import express from "express";
+import { getAllUsers, loginUser, registerUser } from "../controllers/UserData.js";
+import { body, validationResult } from "express-validator";
 let router = express.Router();
 
+router.post(
+  "/register",
+  [
+    body("username")
+      .isLength({ min: 5 })
+      .withMessage("Username must be at least 5 characters long"),
+    body("email").isEmail().withMessage("Invalid email address"),
+    body("password")
+      .isLength({ min: 5 })
+      .withMessage("Password must be at least 5 characters long"),
+  ],
+  registerUser
+);
 
-/* GET users listing. */
-router.post('/register', registerUser);
+router.post("/login", loginUser);
+
+router.post("/allusers", getAllUsers);
 
 export default router;

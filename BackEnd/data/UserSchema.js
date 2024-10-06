@@ -7,6 +7,7 @@ const UserSchema = new Schema({
         type: Boolean, default: false
     },
     email: String,
+    password: String,
     date: {type: Date, default: Date.now}
 })
 
