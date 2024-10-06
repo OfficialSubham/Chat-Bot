@@ -4,7 +4,7 @@ import {
   loginUser,
   registerUser,
 } from "../controllers/UserData.js";
-import { body, validationResult } from "express-validator";
+import { body } from "express-validator";
 let router = express.Router();
 
 router.post(

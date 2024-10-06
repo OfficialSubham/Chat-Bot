@@ -9,7 +9,7 @@ export const registerUser = async (req, res) => {
     if (errors.isEmpty()) {
       //destructuring data from body
       let { name, email, username, password } = req.body;
-      username = username.toLowerCase()
+      username = username.toLowerCase();
       //checking if the user is already existed
       const usernameExisted = await UserData.findOne({ username });
       const emailExisted = await UserData.findOne({ email });
@@ -44,11 +44,11 @@ export const registerUser = async (req, res) => {
 //creating login user function
 export const loginUser = async (req, res) => {
   try {
-    const errors = validationResult(req)
-    if(errors.isEmpty()){
+    const errors = validationResult(req);
+    if (errors.isEmpty()) {
       //destructureing the data from the body
       let { username, password } = req.body;
-      username = username.toLowerCase()
+      username = username.toLowerCase();
       //finding the user in database
       const user = await UserData.findOne({ username });
       if (!user) {
@@ -70,22 +70,46 @@ export const loginUser = async (req, res) => {
       //if pass not match giving message
       return res.json({ message: "Password Incorrect" });
     }
-    return res.json({errors})
+    return res.json({ errors });
   } catch (error) {
     //if any internal error occur
     res.send(500).json({ error });
   }
 };
 
+//Get all users function
 export const getAllUsers = async (req, res) => {
   try {
     //.select specify the selection
     //"-" excludes the pass
     //use array to select or exclude multiple data
-    let allUsers = await UserData.find().select("-password")
-    res.send(allUsers)
+    let allUsers = await UserData.find().select("-password");
+    res.send(allUsers);
   } catch (error) {
     //if any internal error occur
-    res.send(500).json({ error });
+    res.sendStatus(500).json({ error });
+  }
+};
+
+export const isLoggedIn = async (req, res, next) => {
+  try {
+    //checking token is present or not
+    if(!req.headers.token) {
+      //if not redirect to login
+      return res.redirect("/login")
+    }
+    const authenticate = jsonwebtoken.verify(req.headers.token, process.env.SECRET_Key)
+    if(!authenticate) {
+      return res.redirect("/login")
+    }
+    const userDetails = await UserData.findOne({username: authenticate.username})
+
+    req.userID = userDetails._id
+
+    //if it has right token then redirect to work
+    next()
+  } catch (error) {
+    //if any internal error occur
+    res.sendStatus(500).json({ error });
   }
 };

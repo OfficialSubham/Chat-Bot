@@ -2,6 +2,8 @@ import express from "express";
 const router = express.Router();
 //importing google AI got from their docs
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { isLoggedIn } from "../controllers/UserData.js";
+import ChatModel from "../data/ChatsSchema.js";
 
 router.get("/", function (req, res, next) {
   res.send("hello");
@@ -9,7 +11,7 @@ router.get("/", function (req, res, next) {
 
 //wrapping it with try-catch to handle the error if occur
 
-router.get("/gpt", async (req, res) => {
+router.get("/gemini", isLoggedIn, async (req, res) => {
   try {
     //assigning gen ai for ai related access the ai
     const genAI = new GoogleGenerativeAI(req.headers.apikey);
@@ -36,7 +38,16 @@ router.get("/gpt", async (req, res) => {
     //it gives us response from gemini
 
     const result = await chatSession.sendMessage(req.body.message);
-    res.send(result.response.candidates[0].content.parts[0].text);
+
+    //--giving database the messages to save
+
+    const chatData = await ChatModel.create({
+      "user": req.userID,
+      "User-Message": req.body.message,
+      "AI-Message": result.response.candidates[0].content.parts[0].text,
+    })
+
+    res.send(chatData);
 
     //result.response.candidates[0].content.parts[0].text
     //above is the path of the response got from AI
