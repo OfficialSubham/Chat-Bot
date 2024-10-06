@@ -1,5 +1,9 @@
 import express from "express";
-import { getAllUsers, loginUser, registerUser } from "../controllers/UserData.js";
+import {
+  getAllUsers,
+  loginUser,
+  registerUser,
+} from "../controllers/UserData.js";
 import { body, validationResult } from "express-validator";
 let router = express.Router();
 
@@ -17,8 +21,15 @@ router.post(
   registerUser
 );
 
-router.post("/login", loginUser);
+router.post(
+  "/login",
+  [
+    body("username").isLength({ min: 2 }),
+    body("password").isLength({ min: 2 }),
+  ],
+  loginUser
+);
 
-router.post("/allusers", getAllUsers);
+router.get("/allusers", getAllUsers);
 
 export default router;

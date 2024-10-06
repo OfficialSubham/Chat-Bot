@@ -8,8 +8,8 @@ export const registerUser = async (req, res) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
       //destructuring data from body
-      const { name, email, username, password } = req.body;
-
+      let { name, email, username, password } = req.body;
+      username = username.toLowerCase()
       //checking if the user is already existed
       const usernameExisted = await UserData.findOne({ username });
       const emailExisted = await UserData.findOne({ email });
@@ -44,38 +44,46 @@ export const registerUser = async (req, res) => {
 //creating login user function
 export const loginUser = async (req, res) => {
   try {
-    //destructureing the data from the body
-    const { username, password } = req.body;
-
-    //finding the user in database
-    const user = await UserData.findOne({ username });
-    if (!user) {
-      //if user doesnot exist
-      return res.send("User doesn't exist");
+    const errors = validationResult(req)
+    if(errors.isEmpty()){
+      //destructureing the data from the body
+      let { username, password } = req.body;
+      username = username.toLowerCase()
+      //finding the user in database
+      const user = await UserData.findOne({ username });
+      if (!user) {
+        //if user doesnot exist
+        return res.send("User doesn't exist");
+      }
+      //if exist checking the pass
+      const passCorrect = bcrypt.compareSync(password, user.password);
+      if (passCorrect) {
+        //if pass is correct giving the user the token
+        const payload = {
+          //payload contains the info of the users in the token
+          email: user.email,
+          username: user.username,
+        };
+        const jwtToken = jsonwebtoken.sign(payload, process.env.SECRET_Key);
+        return res.json({ token: jwtToken });
+      }
+      //if pass not match giving message
+      return res.json({ message: "Password Incorrect" });
     }
-    //if exist checking the pass
-    const passCorrect = bcrypt.compareSync(password, user.password);
-    if (passCorrect) {
-      //if pass is correct giving the user the token
-      const payload = {
-        //payload contains the info of the users in the token
-        email: user.email,
-        username: user.username,
-      };
-      const jwtToken = jsonwebtoken.sign(payload, process.env.SECRET_Key);
-      return res.json({ token: jwtToken });
-    }
-    //if pass not match giving message
-    return res.json({ message: "Password Incorrect" });
+    return res.json({errors})
   } catch (error) {
     //if any internal error occur
     res.send(500).json({ error });
   }
 };
 
-export const getAllUsers = (req, res) => {
+export const getAllUsers = async (req, res) => {
   try {
-    let allUsers = UserData.find()
+    //.select specify the selection
+    //"-" excludes the pass
+    //use array to select or exclude multiple data
+    let allUsers = await UserData.find().select("-password")
+    res.send(allUsers)
   } catch (error) {
     //if any internal error occur
     res.send(500).json({ error });
