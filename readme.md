@@ -7,10 +7,11 @@
 - Login User
 - Saving User Chats
 - Showing Previous Chats of User
-- Chats in Date Wise manner
+
 
 # Frontend Part -> 
 
 -UI desing 
+-Chats in Date Wise manner
 -loading Design
 -Connecting the backend
