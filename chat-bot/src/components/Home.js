@@ -1,100 +1,119 @@
-import React, {useState} from "react";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 
 const Home = () => {
-
+  const host = "http://localhost:5000";
   const [userMessage, setUserMessage] = useState("");
-
+  const navigate = useNavigate()
   const onChange = (e) => {
     setUserMessage(e.target.value);
-  }
+  };
 
-  const handlePrompt = () => {
-    
-  }
+  useEffect(() => {
+    if(!localStorage.getItem("token")) {
+      navigate("/login")
+    }
+  },);
+
+
+  const handlePrompt = async () => {
+    try {
+      const sendData = await fetch(
+        `${host}/gemini?message=${encodeURIComponent(userMessage)}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            token: JSON.stringify(localStorage.getItem("token")),
+            // "apikey": JSON.stringify(localStorage.getItem("apikey"))
+            apikey: process.env.apikey,
+          },
+        }
+      );
+
+      const message = await sendData.json()
+      console.log(message);
+
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div className="flex w-full h-screen pt-14 justify-center items-center flex-col overflow-y-auto">
       <div className="rounded-xl h- w-1/2 overflow-y-auto mb-24 hide-scrollbar">
-        
         <div className="flex mb-3">
-            <div className="bg-gray-200 text-gray-900 p-3 rounded-lg rounded-bl-none max-w-xs">
-                Hey, how's everything going?
-            </div>
-        </div>
-        
-      
-        <div className="flex justify-end mb-3">
-            <div className="bg-green-200 text-gray-900 p-3 rounded-lg rounded-br-none max-w-xs">
-                All good! Just working on a project.
-            </div>
-        </div>
-
-        <div className="flex mb-3">
-            <div className="bg-gray-200 text-gray-900 p-3 rounded-lg rounded-bl-none max-w-xs">
-                Hey, how's everything going?
-            </div>
-        </div>
-        
-      
-        <div className="flex justify-end mb-3">
-            <div className="bg-green-200 text-gray-900 p-3 rounded-lg rounded-br-none max-w-xs">
-                All good! Just working on a project.
-            </div>
-        </div>
-
-        <div className="flex mb-3">
-            <div className="bg-gray-200 text-gray-900 p-3 rounded-lg rounded-bl-none max-w-xs">
-                Hey, how's everything going?
-            </div>
-        </div>
-        
-      
-        <div className="flex justify-end mb-3">
-            <div className="bg-green-200 text-gray-900 p-3 rounded-lg rounded-br-none max-w-xs">
-                All good! Just working on a project.
-            </div>
-        </div>
-
-        <div className="flex mb-3">
-            <div className="bg-gray-200 text-gray-900 p-3 rounded-lg rounded-bl-none max-w-xs">
-                Hey, how's everything going?
-            </div>
-        </div>
-        
-      
-        <div className="flex justify-end mb-3">
-            <div className="bg-green-200 text-gray-900 p-3 rounded-lg rounded-br-none max-w-xs">
-                All good! Just working on a project.
-            </div>
-        </div>
-
-        <div className="flex mb-3">
-            <div className="bg-gray-200 text-gray-900 p-3 rounded-lg rounded-bl-none max-w-xs">
-                Hey, how's everything going?
-            </div>
-        </div>
-        
-      
-        <div className="flex justify-end mb-3">
-            <div className="bg-green-200 text-gray-900 p-3 rounded-lg rounded-br-none max-w-xs">
-                All good! Just working on a project.
-            </div>
-        </div>
-
-
-     
-        <div className="flex mb-3">
-            <div className="bg-gray-200 text-gray-900 p-3 rounded-lg rounded-bl-none max-w-xs">
-                Nice! What are you working on?
-            </div>
+          <div className="bg-gray-200 text-gray-900 p-3 rounded-lg rounded-bl-none max-w-xs">
+            Hey, how's everything going?
+          </div>
         </div>
 
         <div className="flex justify-end mb-3">
-            <div className="bg-green-200 text-gray-900 p-3 rounded-lg rounded-br-none max-w-xs">
-                A chatbot backend using Node.js and Express.
-            </div>
+          <div className="bg-green-200 text-gray-900 p-3 rounded-lg rounded-br-none max-w-xs">
+            All good! Just working on a project.
+          </div>
         </div>
-    </div>
+
+        <div className="flex mb-3">
+          <div className="bg-gray-200 text-gray-900 p-3 rounded-lg rounded-bl-none max-w-xs">
+            Hey, how's everything going?
+          </div>
+        </div>
+
+        <div className="flex justify-end mb-3">
+          <div className="bg-green-200 text-gray-900 p-3 rounded-lg rounded-br-none max-w-xs">
+            All good! Just working on a project.
+          </div>
+        </div>
+
+        <div className="flex mb-3">
+          <div className="bg-gray-200 text-gray-900 p-3 rounded-lg rounded-bl-none max-w-xs">
+            Hey, how's everything going?
+          </div>
+        </div>
+
+        <div className="flex justify-end mb-3">
+          <div className="bg-green-200 text-gray-900 p-3 rounded-lg rounded-br-none max-w-xs">
+            All good! Just working on a project.
+          </div>
+        </div>
+
+        <div className="flex mb-3">
+          <div className="bg-gray-200 text-gray-900 p-3 rounded-lg rounded-bl-none max-w-xs">
+            Hey, how's everything going?
+          </div>
+        </div>
+
+        <div className="flex justify-end mb-3">
+          <div className="bg-green-200 text-gray-900 p-3 rounded-lg rounded-br-none max-w-xs">
+            All good! Just working on a project.
+          </div>
+        </div>
+
+        <div className="flex mb-3">
+          <div className="bg-gray-200 text-gray-900 p-3 rounded-lg rounded-bl-none max-w-xs">
+            Hey, how's everything going?
+          </div>
+        </div>
+
+        <div className="flex justify-end mb-3">
+          <div className="bg-green-200 text-gray-900 p-3 rounded-lg rounded-br-none max-w-xs">
+            All good! Just working on a project.
+          </div>
+        </div>
+
+        <div className="flex mb-3">
+          <div className="bg-gray-200 text-gray-900 p-3 rounded-lg rounded-bl-none max-w-xs">
+            Nice! What are you working on?
+          </div>
+        </div>
+
+        <div className="flex justify-end mb-3">
+          <div className="bg-green-200 text-gray-900 p-3 rounded-lg rounded-br-none max-w-xs">
+            A chatbot backend using Node.js and Express.
+          </div>
+        </div>
+      </div>
 
       <div className="w-1/2 fixed bottom-4 flex justify-center">
         <input

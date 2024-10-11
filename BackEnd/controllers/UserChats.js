@@ -27,13 +27,13 @@ export const connectGemini = async (req, res) => {
     //defining chatsession to start the chat
     //it gives us response from gemini
 
-    const result = await chatSession.sendMessage(req.body.message);
-
+    const result = await chatSession.sendMessage(req.query.message);
+    console.log(req.query.message);
     //--giving database the messages to save
 
     const chatData = await ChatModel.create({
       user: req.userID,
-      "User-Message": req.body.message,
+      "User-Message": req.query.message,
       "AI-Message": result.response.candidates[0].content.parts[0].text,
     });
 
