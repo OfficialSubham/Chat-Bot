@@ -24,8 +24,8 @@ router.post(
 router.post(
   "/login",
   [
-    body("username").isLength({ min: 2 }),
-    body("password").isLength({ min: 2 }),
+    body("username").isLength({ min: 1 }),
+    body("password").isLength({ min: 1 }),
   ],
   loginUser
 );

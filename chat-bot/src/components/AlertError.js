@@ -24,15 +24,28 @@ const AlertError = (props) => {
             </svg>
             <div>
               {props.errors.map((err) => {
-                const message = err.msg + "\n";
-                return (
-                  <h6
-                    className="text-sm font-normal text-gray-500 mt-1 mb-1"
-                    key={message}
-                  >
-                    {message}
-                  </h6>
-                );
+                if(err.msg) {
+                  const message = err.msg + "\n";
+                  return (
+                    <h6
+                      className="text-sm font-normal text-gray-500 mt-1 mb-1"
+                      key={message}
+                    >
+                      {message}
+                    </h6>
+                  );
+                }
+                else {
+                  const message = err + "\n";
+                  return (
+                    <h6
+                      className="text-sm font-normal text-gray-500 mt-2 mb-2"
+                      key={message}
+                    >
+                      {message}
+                    </h6>
+                  );
+                }
               })}
             </div>
 

@@ -53,7 +53,7 @@ export const loginUser = async (req, res) => {
       const user = await UserData.findOne({ username });
       if (!user) {
         //if user doesnot exist
-        return res.send("User doesn't exist");
+        return res.json({errors: ["User doesn't exist"]});
       }
       //if exist checking the pass
       const passCorrect = bcrypt.compareSync(password, user.password);
