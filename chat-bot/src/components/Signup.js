@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import AlertError from "./AlertError.js";
 
 const Signup = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const host = "http://localhost:5000";
   const [newUser, setNewUser] = useState({
     name: "",
@@ -31,10 +31,14 @@ const Signup = () => {
       const response = await sendData.json();
       if (response.token) {
         localStorage.setItem("token", response.token);
-        navigate("/")
+        localStorage.setItem(
+          "apikey",
+          "AIzaSyDmKjLFvuB_rL_pLkGPiOreGS7jRXK7y2M"
+        );
+        navigate("/");
       } else {
         setErrors(response.errors);
-        setHideAlert("")
+        setHideAlert("");
       }
     }
   };
@@ -48,7 +52,11 @@ const Signup = () => {
   return (
     <>
       <div className="flex w-full h-screen justify-center items-center flex-col">
-        <AlertError hideAlert={hideAlert} setHideAlert={setHideAlert} errors={errors}/>
+        <AlertError
+          hideAlert={hideAlert}
+          setHideAlert={setHideAlert}
+          errors={errors}
+        />
 
         <div className="rounded-lg box-border border border-solid border-black p-4">
           <div className="flex flex-col mb-5">

@@ -8,11 +8,6 @@ import { useState } from "react";
 import Home from "./components/Home.js";
 
 function App() {
-  const [hideAlert, setHideAlert] = useState("hidden");
-
-  // const showAlert = () => {
-  //   setHideAlert("");
-  // };
 
   return (
     <>

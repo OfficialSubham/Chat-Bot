@@ -30,6 +30,7 @@ const Login = () => {
       const response = await sendData.json();
       if (response.token) {
         localStorage.setItem("token", response.token);
+        localStorage.setItem("apikey", "AIzaSyDmKjLFvuB_rL_pLkGPiOreGS7jRXK7y2M")
         navigate("/");
       } else {
         setErrors(response.errors);
