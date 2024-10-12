@@ -36,6 +36,7 @@ const Home = () => {
 
   const handlePrompt = async () => {
     try {
+      
       const sendData = await fetch(
         `${host}/gemini?message=${encodeURIComponent(userMessage)}`,
         {
@@ -47,10 +48,10 @@ const Home = () => {
           }
         }
       );
-
-      const message = await sendData.json()
-
-      console.log(message);
+      setUserMessage("")
+      const responseMessage = await sendData.json()
+   
+      console.log(responseMessage);
 
     } catch (error) {
       console.dir(error);
