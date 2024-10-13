@@ -6,7 +6,8 @@ const Home = () => {
   const host = "http://localhost:5000";
   const [userMessage, setUserMessage] = useState("");
   const [message, setMessage] = useState([]);
-  const navigate = useNavigate()
+  const [messageLoading, setMessageLoading] = useState(true);
+  const navigate = useNavigate();
   const onChange = (e) => {
     setUserMessage(e.target.value);
   };
@@ -16,27 +17,30 @@ const Home = () => {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        token: localStorage.getItem("token")
-      }
-    })
-    const chat = await chatPromise.json()
-    console.log(chat);
-    setMessage(chat)
-  }
+        token: localStorage.getItem("token"),
+      },
+    });
+    const chat = await chatPromise.json();
+    // let parsedChat = chat.map((eachMessage) => {
+    //   let oneMessage = eachMessage;
+    //   oneMessage["AI-Message"] = JSON.parse(eachMessage["AI-Message"])
+    //   return oneMessage;
+    // })
+    console.log(typeof chat[chat.length - 1]["AI-Message"]);
+    // console.log(parsedChat);
+    setMessage(chat);
+  };
 
   useEffect(() => {
-    if(!localStorage.getItem("token")) {
-      return navigate("/login")
-    }
-    else{
-      getAllChats()
+    if (!localStorage.getItem("token")) {
+      return navigate("/login");
+    } else {
+      getAllChats();
     }
   }, []);
 
-
   const handlePrompt = async () => {
     try {
-      
       const sendData = await fetch(
         `${host}/gemini?message=${encodeURIComponent(userMessage)}`,
         {
@@ -44,15 +48,15 @@ const Home = () => {
           headers: {
             "Content-Type": "application/json",
             token: localStorage.getItem("token"),
-            apikey: localStorage.getItem("apikey")
-          }
+            apikey: localStorage.getItem("apikey"),
+          },
         }
       );
-      setUserMessage("")
-      const responseMessage = await sendData.json()
-   
+      setUserMessage("");
+      const responseMessage = await sendData.json();
+      responseMessage["AI-Message"] = JSON.parse(responseMessage["AI-Message"])
+      setMessage(message.concat(responseMessage));
       console.log(responseMessage);
-
     } catch (error) {
       console.dir(error);
     }
@@ -60,7 +64,8 @@ const Home = () => {
 
   return (
     <div className="flex w-full h-screen pt-14 justify-center items-center flex-col overflow-y-auto">
-      {message[0] && <Message message={message}/>}
+    
+      {message[0] && <Message message={message} messageLoading={messageLoading}/>}
 
       <div className="w-1/2 fixed bottom-4 flex justify-center">
         <input

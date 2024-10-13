@@ -28,16 +28,15 @@ export const connectGemini = async (req, res) => {
     //it gives us response from gemini
 
     const result = await chatSession.sendMessage(req.query.message);
-    console.log(req.query.message);
     //--giving database the messages to save
 
     const chatData = await ChatModel.create({
       user: req.userID,
       "User-Message": req.query.message,
-      "AI-Message": result.response.candidates[0].content.parts[0].text,
+      "AI-Message": JSON.stringify(result.response.candidates[0].content.parts[0].text),
     });
-
-    res.send(chatData);
+    console.log(result.response.candidates[0].content.parts[0].text);
+    res.json(chatData);
 
     //result.response.candidates[0].content.parts[0].text
     //above is the path of the response got from AI
@@ -50,7 +49,7 @@ export const connectGemini = async (req, res) => {
 export const getAllChats = async (req, res) => {
   try {
     let allChats = await ChatModel.find({ user: req.userID });
-    res.send(allChats);
+    res.json(allChats);
   } catch (error) {
     res.status(500).json({ error });
     //500 for internal error and message of the error
