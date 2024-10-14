@@ -1,42 +1,39 @@
 import React, { useEffect, useState } from "react";
+import DOMPurify from "dompurify";
 
 const AiMessage = (props) => {
   const [message, setMessage] = useState("");
 
-  // Utility function to detect HTML or plain text with newlines
+  // Utility function to format the message
   const formatMessage = (messages) => {
-    // Check if the message contains valid HTML
-    const htmlTagRegex = /<\/?[a-z][\s\S]*>/i;
+    // Handle newlines (\n) and replace with <br />
+    messages = messages.replace(/\n/g, "<br>");
+    // Handle code blocks (```code```)
+    messages = messages.replace(
+      /```([\s\S]*?)```/g,
+      "<pre><code>$1</code></pre>"
+    );
 
-    if (htmlTagRegex.test(messages)) {
-      // If message contains HTML, return as-is
-      return messages;
-    } else {
-      // If it's plain text, replace \n with <br> for proper line breaks
-      return (
-        messages
-          .replace(/\n/g, "<br />")
-          // Replace code blocks: ``` --> <code></code>
-          .replace(/```(.*?)```/gs, "<code>$1</code>")
+    // Replace bold **text** with <strong>
+    messages = messages.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
 
-          // Replace bold **text** with <h2>text</h2>
-          .replace(/\*\*(.*?)\*\*/g, "<h2>$1</h2>")
+    // Replace italic *text* with <em>
+    messages = messages.replace(/\*(.*?)\*/g, "<em>$1</em>");
 
-          // Replace italic *text* with <h5>text</h5>
-          .replace(/\*(.*?)\*/g, "<h5>$1</h5>")
-      );
-    }
+    return messages;
   };
 
   useEffect(() => {
-    const formatedMessage = formatMessage(props.aimessage);
-    setMessage(formatedMessage);
-  }, []);
+    const formattedMessage = formatMessage(props.aimessage || "");
+    const safeHTML = DOMPurify.sanitize(formattedMessage);
+    setMessage(JSON.parse(safeHTML));
+  }, [props.aimessage]);
 
   return (
     <div className="flex mb-3 ai-message">
       <div
         className="bg-gray-200 text-gray-900 p-3 rounded-t-3xl max-w-4xl rounded-br-3xl ai-message"
+        style={{ whiteSpace: "pre-wrap" }}
         dangerouslySetInnerHTML={{ __html: message }}
       />
     </div>
